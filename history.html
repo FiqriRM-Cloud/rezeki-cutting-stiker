@@ -25,20 +25,22 @@
                 <p>Total Pendapatan: <span id="total">Rp0</span></p>
             </div>
             
-            <table id="tabelTransaksi">
-                <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>Nama</th>
-                        <th>Produk</th>
-                        <th>Jumlah</th>
-                        <th>Bayar</th>
-                        <th>Status</th>
-                        <th>Aksi</th> <!-- Kolom baru untuk tombol aksi -->
-                    </tr>
-                </thead>
-                <tbody id="daftarTransaksi"></tbody>
-            </table>
+            <div class="table-wrapper"> <!-- Wrapper baru untuk tabel -->
+                <table id="tabelTransaksi">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Nama</th>
+                            <th>Produk</th>
+                            <th>Jumlah</th>
+                            <th>Bayar</th>
+                            <th>Status</th>
+                            <th>Aksi</th> <!-- Kolom baru untuk tombol aksi -->
+                        </tr>
+                    </thead>
+                    <tbody id="daftarTransaksi"></tbody>
+                </table>
+            </div> <!-- Akhir dari table-wrapper -->
 
             <div class="export-buttons">
                 <button type="button" id="btn-pdf">Export PDF</button>

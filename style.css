@@ -10,8 +10,7 @@ header {
     display: flex; /* Menggunakan flexbox untuk penataan elemen di header */
     align-items: center; /* Pusatkan item secara vertikal */
     justify-content: center; /* Pusatkan item secara horizontal */
-    background-color: #2E86C1; /* Biru tua */
-    color: white;
+    color: black;
     padding: 15px;
     text-align: center; /* Ini akan memengaruhi teks di dalam header */
     border-radius: 8px 8px 0 0;
@@ -162,21 +161,25 @@ button.pay-debt-btn:hover {
 /* RESPONSIVE TABEL UNTUK HP */
 @media screen and (max-width: 600px) {
     .output-section {
-        overflow-x: auto; /* Aktifkan scroll horizontal */
-        -webkit-overflow-scrolling: touch; /* untuk scroll halus di iOS */
+        /* Hapus overflow-x: auto dari sini */
         padding: 15px 10px;
+    }
+
+    .table-wrapper { /* Gaya baru untuk wrapper tabel */
+        overflow-x: auto; /* AKTIFKAN SCROLL HORIZONTAL HANYA DI SINI */
+        -webkit-overflow-scrolling: touch; /* untuk scroll halus di iOS */
+        margin-bottom: 20px; /* Beri jarak antara tabel dan tombol di bawahnya */
     }
 
     table {
         width: 100%;
-        /* Menyesuaikan min-width untuk 7 kolom */
-        min-width: 480px; /* Disesuaikan untuk menampung 7 kolom */
-        font-size: 8.5px; /* Perkecil ukuran font lebih lanjut */
+        min-width: 500px; /* Beri min-width yang cukup besar agar selalu bisa di-scroll */
+        font-size: 8px; /* Perkecil ukuran font lebih lanjut untuk kepadatan */
     }
 
     table th, 
     table td {
-        padding: 3px 2px; /* Kurangi padding lebih lanjut untuk menghemat ruang */
+        padding: 2px; /* Kurangi padding seminimal mungkin */
         white-space: nowrap; /* Mencegah teks melilit ke baris baru */
     }
 
@@ -209,9 +212,13 @@ button.pay-debt-btn:hover {
         gap: 8px;
     }
 
-    button {
-        width: 100%;
-        padding: 8px;
+    .export-buttons button,
+    .output-section > div:last-child > button { /* Target tombol Kembali ke Dashboard */
+        width: calc(100% - 10px); /* Kurangi sedikit lebar untuk padding container */
+        margin-left: 5px;
+        margin-right: 5px;
+        padding: 10px; /* Tambah padding agar lebih mudah disentuh */
+        font-size: 0.9em; /* Sedikit perkecil font tombol */
     }
 }
 
