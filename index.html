@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezeki Cutting Stiker - Dashboard</title>
+    <link rel="icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <!-- Load libraries in head -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <img src="assets/logo.png" alt="Logo Rezeki Cutting Stiker" class="logo">
+        <h1>Rezeki Cutting Stiker</h1>
+    </header>
+
+    <div class="container">
+        <!-- Input Transaksi -->
+        <form id="transaction-form" class="input-section">
+            <label for="tanggal">Tanggal:</label>
+            <input type="date" id="tanggal" required>
+
+            <label for="nama">Nama Pembeli:</label>
+            <input type="text" id="nama" placeholder="Nama pelanggan" required>
+
+            <label for="produk">Produk:</label>
+            <select id="produk" required>
+                <option value="" disabled selected>Pilih produk</option>
+                <option value="45000">Stiker Mini - Rp45.000</option>
+                <option value="65000">Stiker Besar - Rp65.000</option>
+            </select>
+
+            <label for="jumlah">Jumlah Produk:</label>
+            <input type="number" id="jumlah" placeholder="Contoh: 1" min="1" value="1" required>
+
+            <label for="bayar">Jumlah Bayar (Rp):</label>
+            <input type="number" id="bayar" placeholder="Contoh: 50000" min="0" required>
+
+            <button type="submit">Simpan</button>
+        </form>
+
+        <!-- Tombol untuk melihat riwayat transaksi -->
+        <div class="output-section" style="text-align: center; padding-top: 20px; padding-bottom: 20px;">
+            <button type="button" onclick="location.href='history.html'" style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                Lihat Riwayat Transaksi
+            </button>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+    
+    <!-- Initialize JS -->
+    <script>
+        // Set default date to today
+        document.getElementById('tanggal').valueAsDate = new Date();
+    </script>
+</body>
+</html>

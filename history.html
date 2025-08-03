@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezeki Cutting Stiker - Riwayat Transaksi</title>
+    <link rel="icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <!-- Load libraries in head -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <img src="assets/logo.png" alt="Logo Rezeki Cutting Stiker" class="logo">
+        <h1>Riwayat Transaksi</h1>
+    </header>
+
+    <div class="container">
+        <!-- Riwayat Transaksi -->
+        <div class="output-section">
+            <div class="summary">
+                <h2>📋 Riwayat Transaksi</h2>
+                <p>Total Pendapatan: <span id="total">Rp0</span></p>
+            </div>
+            
+            <table id="tabelTransaksi">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Nama</th>
+                        <th>Produk</th>
+                        <th>Jumlah</th> <!-- Kolom baru untuk jumlah produk -->
+                        <th>Bayar</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="daftarTransaksi"></tbody>
+            </table>
+
+            <div class="export-buttons">
+                <button type="button" id="btn-pdf">Export PDF</button>
+                <button type="button" id="btn-excel">Export Excel</button>
+                <!-- Tombol Hapus Semua Transaksi -->
+                <button type="button" id="btn-clear-all" style="background-color: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                    Hapus Semua Transaksi
+                </button>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="button" onclick="location.href='index.html'" style="background-color: #555; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                    Kembali ke Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+    
+    <!-- Initialize JS -->
+    <script>
+        // Pastikan script.js memuat dan menampilkan data transaksi di sini
+        // Misalnya, panggil fungsi loadTransactions() jika ada di script.js
+        // Jika script.js belum memiliki fungsi untuk memuat data, Anda perlu menambahkannya.
+        if (typeof loadTransactions === 'function') {
+            loadTransactions();
+        }
+
+        // Event listener untuk tombol Hapus Semua Transaksi
+        document.getElementById('btn-clear-all').addEventListener('click', function() {
+            clearAllTransactions(); // Memanggil fungsi dari script.js
+        });
+    </script>
+</body>
+</html>
