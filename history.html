@@ -31,9 +31,10 @@
                         <th>Tanggal</th>
                         <th>Nama</th>
                         <th>Produk</th>
-                        <th>Jumlah</th> <!-- Kolom baru untuk jumlah produk -->
+                        <th>Jumlah</th>
                         <th>Bayar</th>
                         <th>Status</th>
+                        <th>Aksi</th> <!-- Kolom baru untuk tombol aksi -->
                     </tr>
                 </thead>
                 <tbody id="daftarTransaksi"></tbody>
@@ -42,7 +43,6 @@
             <div class="export-buttons">
                 <button type="button" id="btn-pdf">Export PDF</button>
                 <button type="button" id="btn-excel">Export Excel</button>
-                <!-- Tombol Hapus Semua Transaksi -->
                 <button type="button" id="btn-clear-all" style="background-color: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
                     Hapus Semua Transaksi
                 </button>
@@ -55,21 +55,31 @@
         </div>
     </div>
 
+    <!-- Modal Pembayaran Utang -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Lunasi Pembayaran</h2>
+            <p>Transaksi untuk: <strong id="modalCustomerName"></strong></p>
+            <p>Produk: <strong id="modalProductName"></strong></p>
+            <p>Jumlah Utang: <strong id="modalDebtAmount"></strong></p>
+            <label for="paymentAmount">Jumlah Pembayaran:</label>
+            <input type="number" id="paymentAmount" placeholder="Masukkan jumlah pembayaran" min="0">
+            <button id="savePaymentBtn">Simpan Pembayaran</button>
+        </div>
+    </div>
+
     <!-- Script -->
     <script src="script.js"></script>
     
     <!-- Initialize JS -->
     <script>
-        // Pastikan script.js memuat dan menampilkan data transaksi di sini
-        // Misalnya, panggil fungsi loadTransactions() jika ada di script.js
-        // Jika script.js belum memiliki fungsi untuk memuat data, Anda perlu menambahkannya.
         if (typeof loadTransactions === 'function') {
             loadTransactions();
         }
 
-        // Event listener untuk tombol Hapus Semua Transaksi
         document.getElementById('btn-clear-all').addEventListener('click', function() {
-            clearAllTransactions(); // Memanggil fungsi dari script.js
+            clearAllTransactions();
         });
     </script>
 </body>

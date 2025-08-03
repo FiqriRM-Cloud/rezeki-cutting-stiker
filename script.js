@@ -20,7 +20,10 @@ function saveTransaction(transaction) {
 
 // Fungsi untuk memuat transaksi dari Local Storage
 function loadTransactions() {
+    console.log('loadTransactions() called.');
     const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    console.log('Transactions loaded from localStorage:', transactions);
+
     const daftarTransaksi = document.getElementById('daftarTransaksi');
     const totalElement = document.getElementById('total');
     let totalPendapatan = 0;
@@ -28,13 +31,15 @@ function loadTransactions() {
     daftarTransaksi.innerHTML = ''; // Bersihkan tabel sebelum memuat data baru
 
     if (transactions.length === 0) {
-        // Mengubah colspan menjadi 6 karena ada kolom "Jumlah" baru
-        daftarTransaksi.innerHTML = '<tr><td colspan="6" style="text-align: center;">Belum ada transaksi.</td></tr>';
+        console.log('No transactions found.');
+        // Mengubah colspan menjadi 7 karena ada kolom "Aksi" baru
+        daftarTransaksi.innerHTML = '<tr><td colspan="7" style="text-align: center;">Belum ada transaksi.</td></tr>';
         totalElement.textContent = formatRupiah(0);
         return;
     }
 
     transactions.forEach((transaksi, index) => {
+        console.log('Processing transaction at index', index, ':', transaksi);
         const row = daftarTransaksi.insertRow();
 
         // Format tanggal ke DD/MM/YYYY
@@ -48,10 +53,10 @@ function loadTransactions() {
         row.insertCell(0).textContent = formattedDate;
         row.insertCell(1).textContent = transaksi.nama;
         row.insertCell(2).textContent = transaksi.produkNama;
-        row.insertCell(3).textContent = transaksi.jumlah; // Menampilkan jumlah produk
+        row.insertCell(3).textContent = transaksi.jumlah;
         row.insertCell(4).textContent = formatRupiah(transaksi.bayar);
 
-        const statusCell = row.insertCell(5); // Mengubah indeks karena ada kolom baru
+        const statusCell = row.insertCell(5);
         const statusText = document.createElement('span');
         statusText.textContent = transaksi.status;
 
@@ -64,6 +69,22 @@ function loadTransactions() {
             statusText.classList.add('pas');
         }
         statusCell.appendChild(statusText);
+
+        // Kolom Aksi
+        const actionCell = row.insertCell(6);
+        console.log('Checking status for button:', transaksi.status);
+        if (transaksi.status.includes('Kurang')) {
+            console.log('Status includes "Kurang", adding Bayar Utang button.');
+            const payButton = document.createElement('button');
+            payButton.textContent = 'Bayar Utang';
+            payButton.classList.add('pay-debt-btn'); // Tambahkan kelas untuk styling
+            payButton.dataset.index = index; // Simpan indeks transaksi
+            payButton.addEventListener('click', () => openPaymentModal(index));
+            actionCell.appendChild(payButton);
+        } else {
+            console.log('Status does NOT include "Kurang", showing hyphen.');
+            actionCell.textContent = '-'; // Tidak ada aksi jika tidak berutang
+        }
 
         totalPendapatan += transaksi.bayar;
     });
@@ -79,9 +100,8 @@ function formatRupiah(angka) {
     return 'Rp' + result;
 }
 
-// Fungsi untuk menghapus semua transaksi
+// Fungsi untuk menghapus semua transaksi (menggunakan modal kustom)
 function clearAllTransactions() {
-    // Menggunakan modal kustom sebagai pengganti confirm()
     const confirmModal = document.createElement('div');
     confirmModal.style.cssText = `
         position: fixed;
@@ -123,7 +143,7 @@ if (document.getElementById('transaction-form')) {
     const tanggalInput = document.getElementById('tanggal');
     const namaInput = document.getElementById('nama');
     const produkSelect = document.getElementById('produk');
-    const jumlahInput = document.getElementById('jumlah'); // Ambil elemen jumlah
+    const jumlahInput = document.getElementById('jumlah');
     const bayarInput = document.getElementById('bayar');
 
     transactionForm.addEventListener('submit', function(event) {
@@ -132,17 +152,17 @@ if (document.getElementById('transaction-form')) {
         const tanggal = tanggalInput.value;
         const nama = namaInput.value;
         const produkValue = parseInt(produkSelect.value);
-        const produkNama = produkSelect.options[produkSelect.selectedIndex].text.split(' - ')[0]; // Ambil hanya nama produk
-        const jumlah = parseInt(jumlahInput.value); // Ambil nilai jumlah
+        const produkNama = produkSelect.options[produkSelect.selectedIndex].text.split(' - ')[0];
+        const jumlah = parseInt(jumlahInput.value);
         const bayar = parseInt(bayarInput.value);
 
         // Hitung total harga berdasarkan produk dan jumlah
         const totalHargaProduk = produkValue * jumlah;
 
         let status = '';
-        if (bayar < totalHargaProduk) { // Bandingkan dengan totalHargaProduk
-            status = `Kurang Rp${formatRupiah(totalHargaProduk - bayar).substring(2)}`; // Hapus 'Rp' dari formatRupiah
-        } else if (bayar > totalHargaProduk) { // Bandingkan dengan totalHargaProduk
+        if (bayar < totalHargaProduk) {
+            status = `Kurang Rp${formatRupiah(totalHargaProduk - bayar).substring(2)}`;
+        } else if (bayar > totalHargaProduk) {
             status = `Lebih Rp${formatRupiah(bayar - totalHargaProduk).substring(2)}`;
         } else {
             status = 'Pas';
@@ -153,7 +173,7 @@ if (document.getElementById('transaction-form')) {
             nama: nama,
             produkNama: produkNama,
             produkHarga: produkValue,
-            jumlah: jumlah, // Simpan jumlah produk
+            jumlah: jumlah,
             bayar: bayar,
             status: status
         };
@@ -163,14 +183,96 @@ if (document.getElementById('transaction-form')) {
 
         // Reset form
         transactionForm.reset();
-        tanggalInput.valueAsDate = new Date(); // Set tanggal kembali ke hari ini
-        produkSelect.value = ""; // Reset pilihan produk
-        jumlahInput.value = "1"; // Reset jumlah ke 1
+        tanggalInput.valueAsDate = new Date();
+        produkSelect.value = "";
+        jumlahInput.value = "1";
     });
 }
 
-// Hanya jalankan kode yang relevan dengan tabel di history.html
+// Kode khusus untuk history.html (tabel, export, dan modal pembayaran)
 if (document.getElementById('tabelTransaksi')) {
+    const paymentModal = document.getElementById('paymentModal');
+    const closeButton = document.querySelector('.close-button');
+    const savePaymentBtn = document.getElementById('savePaymentBtn');
+    const paymentAmountInput = document.getElementById('paymentAmount');
+    let currentTransactionIndex = -1; // Untuk menyimpan indeks transaksi yang sedang di-edit
+
+    // Buka modal pembayaran
+    function openPaymentModal(index) {
+        console.log('openPaymentModal called for index:', index);
+        const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        const transaction = transactions[index];
+        
+        if (!transaction) {
+            console.error('Transaction not found for index:', index);
+            return; // Pastikan transaksi ada
+        }
+
+        currentTransactionIndex = index;
+
+        // Hitung sisa utang
+        const totalHargaProduk = transaction.produkHarga * transaction.jumlah;
+        const sisaUtang = totalHargaProduk - transaction.bayar;
+
+        document.getElementById('modalCustomerName').textContent = transaction.nama;
+        document.getElementById('modalProductName').textContent = transaction.produkNama;
+        document.getElementById('modalDebtAmount').textContent = formatRupiah(sisaUtang);
+        paymentAmountInput.value = sisaUtang; // Isi default dengan sisa utang
+        paymentModal.style.display = 'flex'; // Tampilkan modal
+    }
+
+    // Tutup modal pembayaran
+    closeButton.addEventListener('click', () => {
+        paymentModal.style.display = 'none';
+        paymentAmountInput.value = ''; // Bersihkan input
+    });
+
+    // Tutup modal jika klik di luar area modal content
+    window.addEventListener('click', (event) => {
+        if (event.target === paymentModal) {
+            paymentModal.style.display = 'none';
+            paymentAmountInput.value = '';
+        }
+    });
+
+    // Simpan pembayaran utang
+    savePaymentBtn.addEventListener('click', () => {
+        if (currentTransactionIndex === -1) {
+            console.error('No transaction selected for payment.');
+            return;
+        }
+
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let transaction = transactions[currentTransactionIndex];
+
+        const additionalPayment = parseInt(paymentAmountInput.value);
+
+        if (isNaN(additionalPayment) || additionalPayment <= 0) {
+            showAlert('Jumlah pembayaran tidak valid!', 'error');
+            return;
+        }
+
+        transaction.bayar += additionalPayment; // Tambahkan pembayaran baru
+
+        // Hitung ulang status
+        const totalHargaProduk = transaction.produkHarga * transaction.jumlah;
+        if (transaction.bayar < totalHargaProduk) {
+            transaction.status = `Kurang Rp${formatRupiah(totalHargaProduk - transaction.bayar).substring(2)}`;
+        } else if (transaction.bayar > totalHargaProduk) {
+            transaction.status = `Lebih Rp${formatRupiah(transaction.bayar - totalHargaProduk).substring(2)}`;
+        } else {
+            transaction.status = 'Pas';
+        }
+
+        transactions[currentTransactionIndex] = transaction;
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+
+        showAlert('Pembayaran berhasil dicatat!', 'success');
+        paymentModal.style.display = 'none';
+        paymentAmountInput.value = '';
+        loadTransactions(); // Muat ulang tabel untuk menampilkan perubahan
+    });
+
     // Muat transaksi saat halaman history.html dimuat
     document.addEventListener('DOMContentLoaded', loadTransactions);
 
@@ -186,7 +288,7 @@ if (document.getElementById('tabelTransaksi')) {
         }
 
         // Menambahkan kolom "Jumlah"
-        const tableColumn = ["Tanggal", "Nama", "Produk", "Jumlah", "Bayar", "Status"];
+        const tableColumn = ["Tanggal", "Nama", "Produk", "Jumlah", "Bayar", "Status"]; // Aksi tidak diekspor
         const tableRows = [];
 
         transactions.forEach(transaksi => {
@@ -200,7 +302,7 @@ if (document.getElementById('tabelTransaksi')) {
                 formattedDate,
                 transaksi.nama,
                 transaksi.produkNama,
-                transaksi.jumlah, // Menambahkan jumlah produk
+                transaksi.jumlah,
                 formatRupiah(transaksi.bayar),
                 transaksi.status
             ];
@@ -217,7 +319,7 @@ if (document.getElementById('tabelTransaksi')) {
                 0: { cellWidth: 'auto' }, // Tanggal
                 1: { cellWidth: 'auto' }, // Nama
                 2: { cellWidth: 'auto' }, // Produk
-                3: { cellWidth: 'auto' }, // Jumlah (kolom baru)
+                3: { cellWidth: 'auto' }, // Jumlah
                 4: { cellWidth: 'auto' }, // Bayar
                 5: { cellWidth: 'auto' }  // Status
             }
@@ -247,7 +349,7 @@ if (document.getElementById('tabelTransaksi')) {
                 Tanggal: formattedDate,
                 Nama: transaksi.nama,
                 Produk: transaksi.produkNama,
-                Jumlah: transaksi.jumlah, // Menambahkan jumlah produk
+                Jumlah: transaksi.jumlah,
                 Bayar: transaksi.bayar,
                 Status: transaksi.status
             };

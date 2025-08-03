@@ -10,7 +10,8 @@ header {
     display: flex; /* Menggunakan flexbox untuk penataan elemen di header */
     align-items: center; /* Pusatkan item secara vertikal */
     justify-content: center; /* Pusatkan item secara horizontal */
-    color: black;
+    background-color: #2E86C1; /* Biru tua */
+    color: white;
     padding: 15px;
     text-align: center; /* Ini akan memengaruhi teks di dalam header */
     border-radius: 8px 8px 0 0;
@@ -87,7 +88,6 @@ table td {
 /* PERBAIKAN TOMBOL */
 button {
     margin: 5px 0;
-    /* background-color: #27AE60; */ /* Hijau - Dihapus atau diubah */
     background-color: transparent; /* Mengatur background menjadi transparan */
     color: #27AE60; /* Mengubah warna teks tombol menjadi hijau */
     border: 1px solid #27AE60; /* Menambahkan border hijau */
@@ -101,7 +101,6 @@ button:hover {
     background-color: #27AE60; /* Background hijau saat hover */
     color: white; /* Warna teks putih saat hover */
 }
-
 
 .export-buttons button {
     background-color: #3498db; /* Biru */
@@ -145,6 +144,21 @@ button:hover {
     opacity: 0;
 }
 
+/* Gaya untuk tombol "Bayar Utang" */
+button.pay-debt-btn {
+    background-color: #f39c12; /* Warna oranye */
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    font-size: 0.8em;
+    margin: 2px 0; /* Sesuaikan margin agar tidak terlalu besar di sel tabel */
+}
+
+button.pay-debt-btn:hover {
+    background-color: #e67e22; /* Warna oranye lebih gelap saat hover */
+}
+
+
 /* RESPONSIVE TABEL UNTUK HP */
 @media screen and (max-width: 600px) {
     .output-section {
@@ -155,33 +169,39 @@ button:hover {
 
     table {
         width: 100%;
-        /* Mengurangi min-width lebih lanjut untuk resolusi yang sangat kecil */
-        min-width: 360px; /* Disesuaikan untuk 380px, agar lebih pas */
-        font-size: 10px; /* Perkecil ukuran font lebih lanjut */
+        /* Menyesuaikan min-width untuk 7 kolom */
+        min-width: 480px; /* Disesuaikan untuk menampung 7 kolom */
+        font-size: 8.5px; /* Perkecil ukuran font lebih lanjut */
     }
 
     table th, 
     table td {
-        padding: 4px 3px; /* Kurangi padding lebih lanjut untuk menghemat ruang */
+        padding: 3px 2px; /* Kurangi padding lebih lanjut untuk menghemat ruang */
         white-space: nowrap; /* Mencegah teks melilit ke baris baru */
     }
 
     /* Atur lebar kolom untuk memberikan ruang yang cukup pada setiap kolom */
-    /* Sesuaikan persentase lebar agar lebih kompak lagi */
+    /* Sesuaikan persentase lebar agar lebih kompak lagi dengan 7 kolom */
     table th:nth-child(1), table td:nth-child(1) { /* Kolom Tanggal */
-        width: 20%; /* Sedikit lebih lebar untuk tanggal */
+        width: 15%; 
     }
     table th:nth-child(2), table td:nth-child(2) { /* Kolom Nama */
-        width: 20%;
+        width: 15%;
     }
     table th:nth-child(3), table td:nth-child(3) { /* Kolom Produk */
-        width: 20%; /* Disesuaikan agar lebih kompak */
+        width: 18%; 
     }
-    table th:nth-child(4), table td:nth-child(4) { /* Kolom Bayar */
-        width: 20%; /* Sedikit lebih kecil */
+    table th:nth-child(4), table td:nth-child(4) { /* Kolom Jumlah */
+        width: 8%; /* Lebih kecil untuk jumlah */
     }
-    table th:nth-child(5), table td:nth-child(5) { /* Kolom Status */
-        width: 20%; /* Disesuaikan agar total 100% */
+    table th:nth-child(5), table td:nth-child(5) { /* Kolom Bayar */
+        width: 15%; 
+    }
+    table th:nth-child(6), table td:nth-child(6) { /* Kolom Status */
+        width: 17%; 
+    }
+    table th:nth-child(7), table td:nth-child(7) { /* Kolom Aksi (BARU) */
+        width: 12%; /* Untuk tombol "Bayar Utang" */
     }
 
     .export-buttons {
@@ -194,3 +214,93 @@ button:hover {
         padding: 8px;
     }
 }
+
+/* Gaya untuk Modal Pembayaran */
+.modal {
+    display: none; /* Sembunyikan modal secara default */
+    position: fixed; /* Tetap di posisi yang sama saat scroll */
+    z-index: 1002; /* Lebih tinggi dari alert */
+    left: 0;
+    top: 0;
+    width: 100%; /* Lebar penuh */
+    height: 100%; /* Tinggi penuh */
+    overflow: auto; /* Aktifkan scroll jika konten terlalu besar */
+    background-color: rgba(0,0,0,0.6); /* Background gelap transparan */
+    justify-content: center; /* Pusatkan konten modal secara horizontal */
+    align-items: center; /* Pusatkan konten modal secara vertikal */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto; /* Pusatkan secara vertikal dan horizontal */
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 80%; /* Lebar modal */
+    max-width: 400px; /* Lebar maksimum */
+    position: relative;
+    text-align: center;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #2E86C1;
+}
+
+.modal-content p {
+    margin-bottom: 10px;
+    font-size: 0.95em;
+}
+
+.modal-content strong {
+    color: #333;
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.modal-content input[type="number"] {
+    width: calc(100% - 20px); /* Lebar input */
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Pastikan padding tidak menambah lebar */
+}
+
+.modal-content button#savePaymentBtn {
+    background-color: #27AE60; /* Hijau */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.modal-content button#savePaymentBtn:hover {
+    background-color: #229a55;
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
